@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  fastapi:
+    build:
+        context: .
+        dockerfile: app.dockerfile
+    volumes:
+      - ./fastapi:/app
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+  nginx:
+    build:
+        context: .
+        dockerfile: nginx.dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - fastapi
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: yourdbname
+      POSTGRES_USER: youruser
+      POSTGRES_PASSWORD: yourpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+volumes:
+  postgres_data:
