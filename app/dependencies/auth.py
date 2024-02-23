@@ -12,10 +12,19 @@ reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl="/auth/token"
 )
 
+
+async def get_token(token: str | None):
+    if not token:
+        raise HTTPException(status_code=400, detail="Token missing")
+    # Here, add your logic to validate the token.
+    return token
+
+
 TokenDep = Annotated[str, Depends(reusable_oauth2)]
+TokenStupidDep = Annotated[str, Depends(get_token)]
 
 
-async def get_current_user(session: SessionDep, token: TokenDep) -> User:
+async def get_current_user(session: SessionDep, token: TokenStupidDep) -> User:
     try:
         payload = jwt.decode(
             token, Settings.SECRET_KEY, algorithms=[ALGORITHM],
