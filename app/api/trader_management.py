@@ -6,7 +6,8 @@ from app.crud.trader_mgmnt import create_trader_items, full_update_trader_item, 
 from app.dependencies import SessionDep, UserDep
 from app.crud import post_fill_shop
 from app.schemas import TraderItem, TraderBuyItem
-from app.schemas.trader_mgmnt import CreatedTrader, FullUpdateTraderItem, NewTrader, NewTraderItem, NewTraderItemPoints, UpdateTrader
+from app.schemas.trader_mgmnt import CreatedTrader, FullUpdateTraderItem, NewTrader, NewTraderItem, NewTraderItemPoints, \
+    UpdateTrader, TraderCreateSpawnPosition, TraderCreateInventoryItems
 
 
 def dep_token(_: UserDep):
@@ -100,13 +101,38 @@ def delete_trader_items(
     remove_trader_items(db, trader_id, items)
     
 
-@router.post("/trader/{trader_id}", response_model=UpdateTrader)
+@router.post("/trader/{trader_id}", response_model=NewTrader)
 def trader_update(
     db: SessionDep,
     trader_id: int,
-    data: UpdateTrader,
+    data: NewTrader,
 ):
-    return update_trader(db, trader_id, data)
+    data = update_trader(db, trader_id, data)
+    return NewTrader(
+        name=data.name,
+        pos=TraderCreateSpawnPosition(
+            x=data.position.x,
+            y=data.position.y,
+            z=data.position.z,
+            x_dir=data.position.x_dir,
+            y_dir=data.position.y_dir,
+            z_dir=data.position.z_dir,
+        ) if data.position is not None else None,
+        inventory=TraderCreateInventoryItems(
+            skin_name=data.inventory.skin_name,
+            vest_id=data.inventory.vest_id,
+            backpack_id=data.inventory.backpack_id,
+            top_id=data.inventory.top_id,
+            belt_id=data.inventory.belt_id,
+            legs_id=data.inventory.legs_id,
+            head_id=data.inventory.head_id,
+            face_id=data.inventory.face_id,
+            eyes_id=data.inventory.eyes_id,
+            gloves_id=data.inventory.gloves_id,
+            feet_id=data.inventory.feet_id,
+            armband_id=data.inventory.armband_id,
+        ) if data.inventory is not None else None,
+    )
 
 
 @router.post("/trader/{trader_id}/items/{item_id}", response_model=FullUpdateTraderItem)

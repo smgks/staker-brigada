@@ -27,13 +27,64 @@ class Trader(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
     name: Mapped[str] = mapped_column(unique=True)
     items: Mapped[List["TraderItems"]] = relationship()
+    position: Mapped[Optional["TraderPosition"]] = relationship("TraderPosition", uselist=False, back_populates="trader")
+    inventory: Mapped[Optional["TraderInventory"]] = relationship("TraderInventory", uselist=False, back_populates="trader")
+
+
+class TraderPosition(Base):
+    __tablename__ = "trader_position"
+    __table_args__ = {"schema": "game"}
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
+    trader_id: Mapped[int] = mapped_column(ForeignKey("game.trader.id", ondelete="CASCADE"), index=True)
+    x: Mapped[float] = mapped_column()
+    y: Mapped[float] = mapped_column()
+    z: Mapped[float] = mapped_column()
+    trader: Mapped[Trader] = relationship("Trader", back_populates="position")
+    x_dir: Mapped[float] = mapped_column()
+    y_dir: Mapped[float] = mapped_column()
+    z_dir: Mapped[float] = mapped_column()
+
+
+class TraderInventory(Base):
+    __tablename__ = "trader_inventory"
+    __table_args__ = {"schema": "game"}
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
+    trader_id: Mapped[int] = mapped_column(ForeignKey("game.trader.id", ondelete="CASCADE"), index=True)
+    skin_name: Mapped[str] = mapped_column()
+    vest_id: Mapped[int | None] = mapped_column(ForeignKey("game.items.id", ondelete="SET NULL"))
+    vest: Mapped["Item"] = relationship("Item", foreign_keys=[vest_id])
+    backpack_id: Mapped[int | None] = mapped_column(ForeignKey("game.items.id", ondelete="SET NULL"))
+    backpack: Mapped["Item"] = relationship("Item", foreign_keys=[backpack_id])
+    top_id: Mapped[int | None] = mapped_column(ForeignKey("game.items.id", ondelete="SET NULL"))
+    top: Mapped["Item"] = relationship("Item", foreign_keys=[top_id])
+    belt_id: Mapped[int | None] = mapped_column(ForeignKey("game.items.id", ondelete="SET NULL"))
+    belt: Mapped["Item"] = relationship("Item", foreign_keys=[belt_id])
+    legs_id: Mapped[int | None] = mapped_column(ForeignKey("game.items.id", ondelete="SET NULL"))
+    legs: Mapped["Item"] = relationship("Item", foreign_keys=[legs_id])
+    head_id: Mapped[int | None] = mapped_column(ForeignKey("game.items.id", ondelete="SET NULL"))
+    head: Mapped["Item"] = relationship("Item", foreign_keys=[head_id])
+    face_id: Mapped[int | None] = mapped_column(ForeignKey("game.items.id", ondelete="SET NULL"))
+    face: Mapped["Item"] = relationship("Item", foreign_keys=[face_id])
+    eyes_id: Mapped[int | None] = mapped_column(ForeignKey("game.items.id", ondelete="SET NULL"))
+    eyes: Mapped["Item"] = relationship("Item", foreign_keys=[eyes_id])
+    gloves_id: Mapped[int | None] = mapped_column(ForeignKey("game.items.id", ondelete="SET NULL"))
+    gloves: Mapped["Item"] = relationship("Item", foreign_keys=[gloves_id])
+    feet_id: Mapped[int | None] = mapped_column(ForeignKey("game.items.id", ondelete="SET NULL"))
+    feet: Mapped["Item"] = relationship("Item", foreign_keys=[feet_id])
+    armband_id: Mapped[int | None] = mapped_column(ForeignKey("game.items.id", ondelete="SET NULL"))
+    armband: Mapped["Item"] = relationship("Item", foreign_keys=[armband_id])
+    trader: Mapped[Trader] = relationship("Trader", back_populates="inventory")
+
 
 
 class TraderItems(Base):
     __tablename__ = "trader_items"
     __table_args__ = {"schema": "game"}
 
-    trader_id: Mapped[int] = mapped_column(ForeignKey("game.trader.id", ondelete="CASCADE"), primary_key=True, index=True)
+    trader_id: Mapped[int] = mapped_column(ForeignKey("game.trader.id", ondelete="CASCADE"), primary_key=True,
+                                           index=True)
     item_id: Mapped[int] = mapped_column(ForeignKey("game.items.id", ondelete="CASCADE"), primary_key=True, index=True)
     price: Mapped[int | None] = mapped_column()
     sell_price: Mapped[int | None] = mapped_column()
@@ -49,7 +100,7 @@ class TraderItemsPoints(Base):
     __tablename__ = "trader_items_points"
     __table_args__ = (
         ForeignKeyConstraint(
-            ['trader_id', 'item_id'],['game.trader_items.trader_id', 'game.trader_items.item_id'],
+            ['trader_id', 'item_id'], ['game.trader_items.trader_id', 'game.trader_items.item_id'],
             ondelete="CASCADE"
         ),
         {"schema": "game"},
