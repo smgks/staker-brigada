@@ -88,7 +88,7 @@ def spawn_traders(db: SessionDep):
 
 
 @router.get("/items/{trader_id}/{player_id}", response_model=TraderShop)
-def get_trader(trader_id: int, player_id: int, db: SessionDep):
+def get_trader(trader_id: int, player_id: str, db: SessionDep):
     trader = get_trader_for_player(trader_id, player_id, db)
     if trader is None:
         raise HTTPException(status_code=404, detail="Trader not found or unavalible for current user")
@@ -119,6 +119,8 @@ def get_trader(trader_id: int, player_id: int, db: SessionDep):
                 )
             )
     return TraderShop(
+        trader_id=trader_id,
+        steam_id=player_id,
         name=trader.name,
         categories=[v for k, v in categories.items()]
     )

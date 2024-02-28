@@ -42,7 +42,7 @@ def get_trader_spawn(db: Session) -> List[models.Trader]:
     return trader.all()
 
 
-def get_trader_for_player(trader_id: int, player_id: int, db: Session) -> models.Trader | None:
+def get_trader_for_player(trader_id: int, player_id: str, db: Session) -> models.Trader | None:
     # add player-specific prices
     trader = db.query(models.Trader).join(
         models.TraderItems
