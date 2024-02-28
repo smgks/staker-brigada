@@ -66,8 +66,8 @@ class TraderCategory(BaseModel):
 
 
 class TraderShop(BaseModel):
-    trader_id: int
-    steam_id: str
+    id: int
+    steamid: str
 
     name: str
     categories: List[TraderCategory]

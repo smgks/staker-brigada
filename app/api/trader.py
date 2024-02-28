@@ -119,8 +119,8 @@ def get_trader(trader_id: int, player_id: str, db: SessionDep):
                 )
             )
     return TraderShop(
-        trader_id=trader_id,
-        steam_id=player_id,
+        id=trader_id,
+        steamid=player_id,
         name=trader.name,
         categories=[v for k, v in categories.items()]
     )
