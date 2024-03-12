@@ -72,10 +72,11 @@ def spawn_items(id: int, player_id: str, db: SessionDep):
     stash = spawn_stash_base(db, id)
     current_item_points = 0
     items_to_spawn = []
-    while current_item_points < stash.avg_items_points:
-        item = get_random_item(stash.items)
-        items_to_spawn.append(item)
-        current_item_points += item.points
+    if len(stash.items) > 0:
+        while current_item_points < stash.avg_items_points:
+            item = get_random_item(stash.items)
+            items_to_spawn.append(item)
+            current_item_points += item.points
     return StashItemsSchema(
         id=stash.id,
         tier=stash.tier,
