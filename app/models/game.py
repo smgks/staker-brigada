@@ -1,6 +1,3 @@
-from enum import unique
-from operator import index
-from os import name
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey, ForeignKeyConstraint, UniqueConstraint
 from typing import List, Optional
@@ -162,3 +159,40 @@ class BankDeposit(Base):
     money: Mapped[int] = mapped_column()
     bank_id: Mapped[int] = mapped_column(ForeignKey("game.bank.id", ondelete="CASCADE"))
     bank: Mapped[Bank] = relationship("Bank", back_populates="deposits")
+
+
+class Position(Base):
+    __tablename__ = "position"
+    __table_args__ = {"schema": "game"}
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
+    x: Mapped[float] = mapped_column()
+    y: Mapped[float] = mapped_column()
+    z: Mapped[float] = mapped_column()
+    x_dir: Mapped[float] = mapped_column()
+    y_dir: Mapped[float] = mapped_column()
+    z_dir: Mapped[float] = mapped_column()
+
+
+class StashItem(Base):
+    __tablename__ = "stash_items"
+    __table_args__ = {"schema": "game"}
+    stash_id: Mapped[int] = mapped_column(ForeignKey("game.stash.id", ondelete="CASCADE"), primary_key=True, index=True)
+    item_id: Mapped[int] = mapped_column(ForeignKey("game.items.id", ondelete="CASCADE"), primary_key=True, index=True)
+    item: Mapped["Item"] = relationship()
+    chance_multiplayer: Mapped[float] = mapped_column(default=1)
+    points: Mapped[int] = mapped_column()
+
+
+class Stash(Base):
+    __tablename__ = "stash"
+    __table_args__ = {"schema": "game"}
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
+    tier: Mapped[int] = mapped_column()
+    class_name: Mapped[str] = mapped_column()
+    position_id: Mapped[int] = mapped_column(ForeignKey("game.position.id", ondelete="CASCADE"), index=True)
+    position: Mapped["Position"] = relationship()
+    items: Mapped[List["StashItem"]] = relationship()
+    avg_items_points: Mapped[int] = mapped_column()
+
+

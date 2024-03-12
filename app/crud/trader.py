@@ -4,7 +4,7 @@ from typing import List
 from sqlalchemy.orm import aliased
 
 import app.models as models
-from app.schemas import TraderBuyItem
+from app.schemas import TraderBuyItem 
 
 
 def get_trader_spawn(db: Session) -> List[models.Trader]:
@@ -44,15 +44,11 @@ def get_trader_spawn(db: Session) -> List[models.Trader]:
 
 def get_trader_for_player(trader_id: int, player_id: str, db: Session) -> models.Trader | None:
     # add player-specific prices
-    trader = db.query(models.Trader).join(
-        models.TraderItems
-    ).join(
-        models.Item
-    ).join(
-        models.Category
-    ).where(
-        models.Trader.id == trader_id
-    )
+    trader = db.query(models.Trader)
+    trader.join(models.TraderItems)
+    trader.join( models.Item)
+    trader.join(models.Category)
+    trader.where(models.Trader.id == trader_id)
     res = db.scalar(trader) 
     return res
 
@@ -78,7 +74,7 @@ def update_item_list_count(
     ).where(
         models.TraderItems.count != None
     )
-    res = db.scalars(query).all()
+    res = query.all()
 
     for value in res:
         if value.count is None:
@@ -113,6 +109,4 @@ def post_fill_shop(trader_id: int, items: List[TraderBuyItem], db: Session):
         value.count += ids[value.item.class_name]
     db.commit()
     return res
-
-
 
