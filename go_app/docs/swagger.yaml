@@ -1,0 +1,212 @@
+definitions:
+  models.Bank:
+    properties:
+      commission:
+        type: integer
+      id:
+        type: integer
+      max_money:
+        type: integer
+    type: object
+  models.BankSpawn:
+    properties:
+      bank:
+        $ref: '#/definitions/models.Bank'
+      position:
+        $ref: '#/definitions/models.Position'
+    type: object
+  models.Deposit:
+    properties:
+      amount:
+        type: integer
+      operation:
+        description: '"deposit" or "withdraw" or "get"'
+        type: string
+    type: object
+  models.Position:
+    properties:
+      x:
+        type: number
+      x_dir:
+        type: number
+      "y":
+        type: number
+      y_dir:
+        type: number
+      z:
+        type: number
+      z_dir:
+        type: number
+    type: object
+  models.WrappedResult-array_models_BankSpawn:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.BankSpawn'
+        type: array
+      status:
+        type: integer
+    type: object
+  models.WrappedResult-models_Bank:
+    properties:
+      data:
+        $ref: '#/definitions/models.Bank'
+      status:
+        type: integer
+    type: object
+  models.WrappedResult-models_Deposit:
+    properties:
+      data:
+        $ref: '#/definitions/models.Deposit'
+      status:
+        type: integer
+    type: object
+  models.WrappedResult-string:
+    properties:
+      data:
+        type: string
+      status:
+        type: integer
+    type: object
+info:
+  contact: {}
+paths:
+  /bank/{id}/{playerId}:
+    get:
+      description: Get bank by id
+      operationId: get-bank
+      parameters:
+      - description: Bank ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Player ID
+        in: path
+        name: playerId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.WrappedResult-models_Bank'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.WrappedResult-string'
+      summary: Get bank by id
+      tags:
+      - bank
+  /banks:
+    get:
+      description: Get all banks
+      operationId: get-all-banks
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.WrappedResult-array_models_BankSpawn'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.WrappedResult-string'
+      summary: Get all banks
+      tags:
+      - bank
+    post:
+      consumes:
+      - application/json
+      description: Create bank
+      operationId: create-bank
+      parameters:
+      - description: Bank
+        in: body
+        name: bank
+        required: true
+        schema:
+          $ref: '#/definitions/models.BankSpawn'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.WrappedResult-string'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.WrappedResult-string'
+      summary: Create bank
+      tags:
+      - bank
+  /deposit/{id}/{playerId}:
+    get:
+      description: Get player deposit
+      operationId: get-player-deposit
+      parameters:
+      - description: Bank ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Player ID
+        in: path
+        name: playerId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.WrappedResult-models_Deposit'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.WrappedResult-string'
+      summary: Get player deposit
+      tags:
+      - bank
+    put:
+      consumes:
+      - application/json
+      description: Update player deposit
+      operationId: update-player-deposit
+      parameters:
+      - description: Bank ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Player ID
+        in: path
+        name: playerId
+        required: true
+        type: string
+      - description: Deposit
+        in: body
+        name: deposit
+        required: true
+        schema:
+          $ref: '#/definitions/models.Deposit'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.WrappedResult-models_Deposit'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.WrappedResult-string'
+      summary: Update player deposit
+      tags:
+      - bank
+swagger: "2.0"

@@ -1,0 +1,322 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/bank/{id}/{playerId}": {
+            "get": {
+                "description": "Get bank by id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bank"
+                ],
+                "summary": "Get bank by id",
+                "operationId": "get-bank",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Bank ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Player ID",
+                        "name": "playerId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.WrappedResult-models_Bank"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.WrappedResult-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/banks": {
+            "get": {
+                "description": "Get all banks",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bank"
+                ],
+                "summary": "Get all banks",
+                "operationId": "get-all-banks",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.WrappedResult-array_models_BankSpawn"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.WrappedResult-string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create bank",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bank"
+                ],
+                "summary": "Create bank",
+                "operationId": "create-bank",
+                "parameters": [
+                    {
+                        "description": "Bank",
+                        "name": "bank",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.BankSpawn"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.WrappedResult-string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.WrappedResult-string"
+                        }
+                    }
+                }
+            }
+        },
+        "/deposit/{id}/{playerId}": {
+            "get": {
+                "description": "Get player deposit",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bank"
+                ],
+                "summary": "Get player deposit",
+                "operationId": "get-player-deposit",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Bank ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Player ID",
+                        "name": "playerId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.WrappedResult-models_Deposit"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.WrappedResult-string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update player deposit",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bank"
+                ],
+                "summary": "Update player deposit",
+                "operationId": "update-player-deposit",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Bank ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Player ID",
+                        "name": "playerId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Deposit",
+                        "name": "deposit",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Deposit"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.WrappedResult-models_Deposit"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.WrappedResult-string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Bank": {
+            "type": "object",
+            "properties": {
+                "commission": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "max_money": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.BankSpawn": {
+            "type": "object",
+            "properties": {
+                "bank": {
+                    "$ref": "#/definitions/models.Bank"
+                },
+                "position": {
+                    "$ref": "#/definitions/models.Position"
+                }
+            }
+        },
+        "models.Deposit": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "operation": {
+                    "description": "\"deposit\" or \"withdraw\" or \"get\"",
+                    "type": "string"
+                }
+            }
+        },
+        "models.Position": {
+            "type": "object",
+            "properties": {
+                "x": {
+                    "type": "number"
+                },
+                "x_dir": {
+                    "type": "number"
+                },
+                "y": {
+                    "type": "number"
+                },
+                "y_dir": {
+                    "type": "number"
+                },
+                "z": {
+                    "type": "number"
+                },
+                "z_dir": {
+                    "type": "number"
+                }
+            }
+        },
+        "models.WrappedResult-array_models_BankSpawn": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.BankSpawn"
+                    }
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.WrappedResult-models_Bank": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/models.Bank"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.WrappedResult-models_Deposit": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/models.Deposit"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.WrappedResult-string": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}

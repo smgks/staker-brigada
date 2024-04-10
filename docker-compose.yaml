@@ -1,11 +1,11 @@
 version: '3.8'
 services:
-  fastapi:
+  go-server:
     build:
-        context: .
-        dockerfile: app.dockerfile
+        context: ./go_app
+        dockerfile: Dockerfile
     volumes:
-      - ./fastapi:/app
+      - ./go-server:/app
     env_file:
       - ./.env
     depends_on:
@@ -18,7 +18,7 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - fastapi
+      - go-server
   db:
     image: postgres
     environment:
