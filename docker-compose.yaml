@@ -4,10 +4,12 @@ services:
     build:
         context: ./go_app
         dockerfile: Dockerfile
+    ports:
+        - "8080:8080"
     volumes:
-      - ./go-server:/app
-    env_file:
-      - ./.env
+      - .:/app
+      - go_cache:/root/.cache/go-build
+      - go_mod:/go/pkg/mod
     depends_on:
       - db
     restart: unless-stopped
